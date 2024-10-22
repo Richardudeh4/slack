@@ -12,15 +12,15 @@ const [open , setOpen] = useCreateWorkspaceModal();
 const {data, isLoading} = useGetWorkspaces();
 
 const workspaceId = useMemo(() => data?.[0]?._id, [data]);
-useEffect(() => {
-
+useEffect(() => {  
   if(isLoading) return;
-  if(workspaceId){
+  if (workspaceId) {
     console.log("redirecting to  workspace");
-  }else if (!open){
+  }
+  else if (!open){
    setOpen(true);
   }
-}, [workspaceId, isLoading,open,setOpen]);
+}, [workspaceId, isLoading, open, setOpen]);
   return (
     <div>
      <UserButton/>
