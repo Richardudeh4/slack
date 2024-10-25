@@ -2,16 +2,20 @@ import { useWorkspaceId } from '@/src/hooks/use-workspace-id'
 import React from 'react'
 import { useCurrentMember } from '../features/members/api/use-current-member';
 import { useGetWorkspace } from '../features/workspaces/api/use-get-workspace';
-import { AlertTriangle, Loader, MessageSquareText, SendHorizonal } from 'lucide-react';
+import { AlertTriangle, HashIcon, Loader, MessageSquareText, SendHorizonal } from 'lucide-react';
 import WorkspaceHeader from './workspace-header';
 import { SidebarItem } from './sidebar-item';
+import { useGetChannels } from '../features/channels/api/use-get-channels';
+import WorkspaceSection from './workspace-section';
+import { useGetMembers } from '../features/members/api/use-get-member';
 
 const WorkspaceSidebar = () => {
     const workspaceId = useWorkspaceId();
 
     const {data: member, isLoading: memberLoading} = useCurrentMember({workspaceId});
-    const {data: workspace, isLoading: workspaceLoading} = useGetWorkspace({id: workspaceId})
-
+    const {data: workspace, isLoading: workspaceLoading} = useGetWorkspace({id: workspaceId});
+    const {data: channels, isLoading: channelsLoading} = useGetChannels({workspaceId});
+    const { data: members, isLoading: membersLoading} = useGetMembers({workspaceId});
     if(workspaceLoading || memberLoading){
         return (
             <div className='flex flex-col bg-[#5E2C5F] h-full items-center justify-center'>
@@ -41,9 +45,22 @@ const WorkspaceSidebar = () => {
         label="Drafts and sent"
         icon={SendHorizonal }
         id="drafts"
-       
-        />
+        />        
       </div>
+        <WorkspaceSection
+        label="Channels"
+        hint="New channel"
+        onNew={() => {}}
+        >
+        {channels?.map((item ) => (
+          <SidebarItem key={item._id}
+          icon={HashIcon}
+          label={item.name}
+          id={item._id}
+          />
+        ))}
+        </WorkspaceSection>
+   
     </div>
   )
 }
