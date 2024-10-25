@@ -18,8 +18,9 @@ export const UseConfirm = (title: string, message: string,): [() => JSX.Element,
         promise?.resolve(true);
         handleClose();
     }
-    const ConfirmDialog = () => {
-        <Dialog open={ promise !== null }>
+
+    const ConfirmDialog = () => (
+        <Dialog open={promise !== null}>
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>
@@ -39,8 +40,6 @@ export const UseConfirm = (title: string, message: string,): [() => JSX.Element,
             </DialogFooter>
         </DialogContent>
         </Dialog>
-    }
-return (
-    [ConfirmDialog, confirm]
-)
+    );
+return [ConfirmDialog, confirm]
 }

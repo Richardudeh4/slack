@@ -27,9 +27,10 @@ const PreferencesModal = ({open, setOpen, initialValue}:PreferencesModalProps) =
     const { mutate: updateWorkSpace, isPending: isUpdatingWorkspace } = useUpdateWorkspace();
     const { mutate: removeWorkSpace, isPending: isRemovingWorkspace } = useRemoveWorkspace();
 
-    const handleRemove =  async () => {
+    const handleRemove = async () => {
         const ok = await confirm();
         if(!ok) return; 
+
         removeWorkSpace({
             id: workspaceId
         }, {
@@ -38,14 +39,13 @@ const PreferencesModal = ({open, setOpen, initialValue}:PreferencesModalProps) =
                 toast.success("workspace removed");
             },
             onError:() => {
-                toast.error("Failed to remove workspace ");
+                toast.error("Failed to remove workspace");
             }
         })
-   
     };
+
     const handleEdit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         updateWorkSpace({
             id:  workspaceId,
             name: value,
