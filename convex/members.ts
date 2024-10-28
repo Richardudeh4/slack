@@ -28,7 +28,7 @@ export const get = query({
         .collect();
        const members  = [];
 
-    for(const member of data){
+    for (const member of data){
         const user = await populateUser(ctx, member.userId);
         if(user){
         members.push({
@@ -38,7 +38,7 @@ export const get = query({
         }
  }
  return members; 
-    }
+    },
 })
 export const current = query({
      args:{ workspaceId: v.id("workspaces")},
