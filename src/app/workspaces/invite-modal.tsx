@@ -18,7 +18,9 @@ const InviteModal = ({open,setOpen , name,joinCode }:InviteModalProps) => {
   const { mutate, isPending } =useNewJoincode();
   const [ConfirmDialog, confirm] = UseConfirm("Are you sure?", "this action will disabled the current code and generate new one");
 
-  const handleNewCode = () =>{
+  const handleNewCode = async ()  => {
+    const ok = await confirm();
+    if(!ok) return;
     mutate({workspaceId}, {
       onSuccess:() => {
         toast.success("Invite code regenerated");
@@ -29,7 +31,9 @@ const InviteModal = ({open,setOpen , name,joinCode }:InviteModalProps) => {
     });
   }
   const workspaceId = useWorkspaceId();
-  const handleCopy = () => {
+  const handleCopy = async () => {
+
+ 
     const inviteLink = `${window.location.origin}/join/${workspaceId}`;
 
     navigator.clipboard
