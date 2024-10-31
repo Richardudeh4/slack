@@ -52,7 +52,7 @@ const  SignInCard = ({setState}: SignInCardProps) => {
 <form onSubmit={onPasswordSignin} className='space-y-2.5'>
 <Input disabled={pending} value={email} onChange={(e) => setEmail(e.target.value)} placeholder='Email' type="email" required/>
 <Input disabled={pending } value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Password'  type='password' required/>
-<Button type="submit" className='w-full' size="lg" disabled={false}>  
+<Button type="submit" className='w-full' size="lg" disabled={pending}>  
 continue
 </Button>
     </form>
