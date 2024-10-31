@@ -9,15 +9,24 @@ import { Loader } from "lucide-react";
 import { useJoin } from "../../features/workspaces/api/use-join";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { useEffect, useMemo } from "react";
 
 
 
 export default function JoinPage(){
     const router = useRouter(); 
     const workspaceId = useWorkspaceId();
-
     const {mutate, isPending} = useJoin();
     const {data, isLoading} = useGetWorkspaceInfo({id: workspaceId});
+    const isMember = useMemo(() => data?.isMember, [data?.isMember]);
+
+    useEffect(() => {
+        if(isMember){
+            router.push(`/workspace/${workspaceId}`);
+        }
+    }, [isMember, router, workspaceId]);
+    
     const handleComplete = (value: string) => {
         mutate({workspaceId, joinCode: value }, {
             onSuccess: (id) => {
@@ -48,8 +57,8 @@ export default function JoinPage(){
             onComplete={handleComplete}
             length={6}
             classNames={{
-                container: "flex gap-x-2",
-                character:   "uppercase h-auto rounded-md border border-gray-300 flex items-center justify-center text-lg font-medium  text-gray-500",
+                container: cn("flex gap-x-2", isPending && "opacity-50 cursor-not-allowed"),
+                character: "uppercase h-auto rounded-md border border-gray-300 flex items-center justify-center text-lg font-medium  text-gray-500",
                 characterInactive: "bg-muted",
                 characterSelected: "bg-white text-black",
                 characterFilled: "bg-white text-black",
