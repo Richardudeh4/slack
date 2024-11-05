@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input';
 import { useRemoveChannel } from '@/src/app/features/channels/api/use-remove-channel';
 import { useUpdateChannel } from '@/src/app/features/channels/api/use-update-channel';
+import { useCurrentMember } from '@/src/app/features/members/api/use-current-member';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '@/src/components/ui/dialog'
 import { useChannelId } from '@/src/hooks/use-channel-id';
 import { UseConfirm } from '@/src/hooks/use-confirm';
@@ -24,9 +25,15 @@ const Header = ({title}: HeaderProps) => {
     const [ConfirmDialog, confirm] = UseConfirm("Delete this channel", "You are about to delete this channel. this action is irreversable");
     const channelId = useChannelId();
     const [editOpen, setEditOpen] = useState(false);
+    const {data: member} = useCurrentMember({workspaceId})
     const [value, setValue] = useState(title);
     const {mutate: updateChannel, isPending: updatingChannel} = useUpdateChannel()
     const {mutate: removeChannel , isPending: removingChannel} = useRemoveChannel();
+
+    const handleEditOpen = (value:boolean) => {
+            if(member?.role !== "admin") return;
+            setEditOpen(true);
+    }
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.replace(/\s+/g, "-").toLowerCase();
         setValue(value);
@@ -76,12 +83,18 @@ const Header = ({title}: HeaderProps) => {
                 </DialogTitle>
             </DialogHeader>
             <div className="px-4 pb-4 flex flex-col gap-y-2">
-                <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                <Dialog open={editOpen} onOpenChange={handleEditOpen}>
                     <DialogTrigger asChild>
                     <div className="px-5 py-4 bg-white rounded-lg border  cursor-pointer hover:bg-gray-50">
                     <div className="flex items-center justify-between">
                             <p className='text-sm font-semibold'>Channel Name</p>
-                            <p className="text-sm text-[#1264a3] hover:underline font-semibold">Edit</p>
+                            {
+                                member?.role === "admin" && (
+                                    <p className="text-sm text-[#1264a3] hover:underline font-semibold">Edit</p>
+                                )
+                                 
+                            }
+                          
                     </div>
                     <p className='text-sm'># {title}</p>
                     </div>
@@ -114,10 +127,15 @@ const Header = ({title}: HeaderProps) => {
                         </form> 
                     </DialogContent>
                     </Dialog>
-                    <button onSubmit={handleDelete} disabled={removingChannel} className='flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg cursor-pointer border hover:bg-gray-50 text-rose-600 '>
-                        <TrashIcon className='size-4'/>
-                        <p className='text-sm font-semibold'>Delete Channel</p>
-                    </button>
+                    {
+                        member?.role === "admin" && (
+                            <button onSubmit={handleDelete} disabled={removingChannel} className='flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg cursor-pointer border hover:bg-gray-50 text-rose-600 '>
+                            <TrashIcon className='size-4'/>
+                            <p className='text-sm font-semibold'>Delete Channel</p>
+                        </button>
+                        )
+                    }
+                   
             </div>
         </DialogContent>
         </Dialog>
