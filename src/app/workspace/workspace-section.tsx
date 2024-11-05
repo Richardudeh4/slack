@@ -14,6 +14,7 @@ interface WorkspaceSectionProps {
     onNew ?:() => void;
 }
 const WorkspaceSection = ({children, label, hint, onNew}: WorkspaceSectionProps) => {
+    
     const [on,toggle] = useToggle(true);
   return (
     <div className='flex flex-col mt-3 px-3 '>

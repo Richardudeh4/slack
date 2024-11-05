@@ -32,7 +32,7 @@ const WorkspaceSwitcher = () => {
     </DropdownMenuTrigger>
     <DropdownMenuContent side="bottom" align="start" className="w-64">
          <DropdownMenuItem
-         onClick={() => router.push(`/workspaces/${workspaceId}`)}
+         onClick={() => router.push(`/workspace/${workspaceId}`)}
           className='cursor-pointer flex-col justify-start items-start capitalize'>
           {workspace?.name}
           <span className='text-xs text-muted-foreground'>
@@ -42,7 +42,7 @@ const WorkspaceSwitcher = () => {
          {
           filteredWorkspaces?.map((workspace) => (
             <DropdownMenuItem 
-            onClick={() => router.push(`/workspaces/${workspace._id}`)}
+            onClick={() => router.push(`/workspace/${workspace._id}`)}
             key={workspace._id}
             className="cursor-pointer capitalize overflow-hidden">
               <div className='shrink-0 size-9 relative overflow-hidden bg-[#616061] text-white font-semibold text-lg rounded-md flex items-center justify-center mr-2 '>

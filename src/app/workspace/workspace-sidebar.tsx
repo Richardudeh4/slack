@@ -59,7 +59,8 @@ const WorkspaceSidebar = () => {
 
         >
         {channels?.map((item ) => (
-          <SidebarItem key={item._id}
+          <SidebarItem
+          key={item._id}
           icon={HashIcon}
           label={item.name}
           id={item._id}
