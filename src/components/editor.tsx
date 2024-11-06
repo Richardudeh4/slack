@@ -1,11 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Smile } from "lucide-react";
-import Quill, { QuillOptions } from "quill";
+import Quill, {type QuillOptions } from "quill";
 import "quill/dist/quill.snow.css";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, MutableRefObject, useLayoutEffect, useState } from "react";
 import {PiTextAa} from "react-icons/pi";
 import {MdSend} from "react-icons/md"
 import { Hint } from "./hint";
+import { Delta , Op} from "quill/core";
+import { cn } from "@/lib/utils";
+import Keyboard from "quill/modules/keyboard";
 
 
 type EditorValue = {
@@ -14,13 +17,31 @@ type EditorValue = {
 }
 interface EditorProps {
     variant?: "create" | "update";
+    onCancel?: () => void;
+    placeholder?: string;
+    defaultValue?: Delta | Op[];
+    disabled?:boolean;
+    innerRef?:MutableRefObject<Quill | null>;
     onSubmit: ({image, body}: EditorValue) => void;
 }
 
-export default function Editor({variant = "create"}: EditorProps){
+export default function Editor({variant = "create", onCancel, placeholder="write something",defaultValue = [] ,disabled = false, innerRef, onSubmit}: EditorProps){
+    const [text, setText] = useState("");
     const containerRef = useRef<HTMLDivElement>(null);
+    const submitRef = useRef(onSubmit);
+    const placeholderRef =  useRef(placeholder);
+    const quillRef = useRef<Quill | null>(null);
+    const defaultValueRef = useRef(defaultValue);
+    const disabledRef = useRef(disabled);
 
+    useLayoutEffect(() => {
+        submitRef.current = onSubmit;
+        placeholderRef.current = placeholder;
+        defaultValueRef.current = defaultValue;
+        disabledRef.current = disabled;
+    })
     useEffect(() => {
+
         if (!containerRef.current) return;
 
         const container = containerRef.current;
@@ -30,15 +51,63 @@ export default function Editor({variant = "create"}: EditorProps){
 
         const options: QuillOptions = {
             theme: "snow",
+            placeholder: placeholderRef.current,
+            modules: {
+                toolbar: 
+                    [
+                      ["bold", "italic", "strike"],
+                      ["link"],
+                      [{list: "ordered"}, {list:"null"}]
+                    ]
+                ,
+                Keyboard: {
+                    bindings: {
+                        enter: {
+                                key: "Enter",
+                                handler: () => {
+                                    //TODO:sumbit form 
+                                    return;
+                                }
+                        },
+                        shift_enter: {
+                        key: "Enter",
+                        shiftKey: true,
+                        handler: () => {
+                            quill.insertText(quill.getSelection()?.index || 0, "\n");
+                        }, 
+                        },
+                    }
+                },
+            }
         };
         const quill = new Quill(editorContainer,  options);
+        quillRef.current = quill;
+        quillRef.current.focus();
 
+        if(innerRef){
+            innerRef.current = quill;
+        }
+        quill.setContents(defaultValueRef.current);
+        setText(quill.getText());
+
+        quill.on(Quill.events.TEXT_CHANGE, () => {
+            setText(quill.getText());
+        });
         return () => {
+            quill.off(Quill.events.TEXT_CHANGE);
             if(container){
                 container.innerHTML = "";
             } 
+            if(quillRef.current){
+                quillRef.current = null; 
+            }
+            if(innerRef){
+                innerRef.current = null;
+            }
         }
-    }, []);
+    }, [innerRef]);
+
+const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
 return (
     <div className="flex flex-col">
        <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:border-slate-300 focus-within:shadow-sm transition bg-white">
@@ -92,7 +161,7 @@ return (
             }
             {
                 variant === "create" && (
-                    <Button disabled={false} size="iconSm" className="ml-auto bg-[#007a5a] hover:bg-[#007a5a]/80 text-white">
+                    <Button disabled={disabled || isEmpty} size="iconSm" className={cn("ml-auto" , isEmpty ? "bg-white hover:bg-white text-muted-foreground " : "bg-[#007a5a] hover:bg-[#007a5a]/80 text-white" )}>
                     <MdSend className="size-4"/>
                     </Button>
                 )
