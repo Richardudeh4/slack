@@ -1,12 +1,12 @@
 import dynamic from "next/dynamic";
 
-const Editor = dynamic(() => import("@/components/editor"), {ssr: false});
+const Editor = dynamic(() => import("../../../../../components/editor"), {ssr: false});
 import React from 'react'
 
 const ChatInput = () => {
   return (
     <div className="px-5 w-full ">
-        <Editor/>
+        <Editor variant="update" onSubmit={() => {}}/>
     </div>
   )
 }
