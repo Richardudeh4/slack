@@ -27,6 +27,7 @@ interface EditorProps {
 
 export default function Editor({variant = "create", onCancel, placeholder="write something",defaultValue = [] ,disabled = false, innerRef, onSubmit}: EditorProps){
     const [text, setText] = useState("");
+    const [isToolbarVisible, setIsToolbarVisible] = useState(true);
     const containerRef = useRef<HTMLDivElement>(null);
     const submitRef = useRef(onSubmit);
     const placeholderRef =  useRef(placeholder);
@@ -57,7 +58,7 @@ export default function Editor({variant = "create", onCancel, placeholder="write
                     [
                       ["bold", "italic", "strike"],
                       ["link"],
-                      [{list: "ordered"}, {list:"null"}]
+                      [{list: "ordered"}, {list:"bullet"}]
                     ]
                 ,
                 Keyboard: {
@@ -107,25 +108,33 @@ export default function Editor({variant = "create", onCancel, placeholder="write
         }
     }, [innerRef]);
 
+const toggleToolbar = () => {
+    setIsToolbarVisible((current) => !current);
+    const toolbarElement = containerRef.current?.querySelector(".ql-toolbar");
+
+    if(toolbarElement){
+        toolbarElement.classList.toggle("hidden");
+    }
+}
 const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
 return (
     <div className="flex flex-col">
        <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden focus-within:border-slate-300 focus-within:shadow-sm transition bg-white">
         <div ref={containerRef} className="h-full ql-custom"/>
         <div className="flex px-2 pb-2 z-[5]">
-            <Hint label="hide formatting">
+            <Hint label={isToolbarVisible ? "Hide formating" : "Show  formatting"}>
             <Button
-             disabled={false} 
+             disabled={disabled } 
              size="iconSm"
              variant="ghost"
-             onClick={() => {}}
+             onClick={toggleToolbar}
              >
                 <PiTextAa className="size-4"/>
             </Button>
             </Hint>
             <Hint label="Emoji">
             <Button
-             disabled={false} 
+             disabled={disabled} 
              size="iconSm"
              variant="ghost"
              onClick={() => {}}
@@ -137,7 +146,7 @@ return (
                 variant === "create" && (
                     <Hint label="image">
                     <Button
-                     disabled={false} 
+                     disabled={disabled} 
                      size="iconSm"
                      variant="ghost"
                      onClick={() => {}}
@@ -153,7 +162,7 @@ return (
                     <Button variant="outline" size="sm" onClick={() => {}} disabled={false}>
                         Cancel 
                     </Button>
-                    <Button className="bg-[#007a5a] hover:bg-[#007a5a]/80 text-white" size="sm" onClick={() => {}} disabled={false}>
+                    <Button className="bg-[#007a5a] hover:bg-[#007a5a]/80 text-white" size="sm" onClick={() => {}} disabled={disabled || isEmpty}>
                         Save
                     </Button>
                     </div>
