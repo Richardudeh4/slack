@@ -12,10 +12,12 @@ import { usePaginatedQuery } from "convex/react";
 
  export type UseGetMessageReturnType = typeof api.messages.get._returnType["page"];
 
- export const UseGetMessage= ({channelId, conversationId, parentMessageId}:UseGetMessageProps) =>{
+ export const UseGetMessages= ({channelId, conversationId, parentMessageId}:UseGetMessageProps) =>{
     const {results, status,loadMore} = usePaginatedQuery(
         api.messages.get, 
         {channelId, conversationId,parentMessageId},
-        {initialNumItems: BATCH_SIZE},)
-
+        {initialNumItems: BATCH_SIZE},);
+        return {
+            results,status, loadMore: () => loadMore(BATCH_SIZE),
+        }
  }
