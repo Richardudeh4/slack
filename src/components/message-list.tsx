@@ -73,7 +73,7 @@ const MessageList = ({
                    threadImage={message.threadImage}
                    threadTimestamp={message.threadTimestamp}
                    isEditing={false}
-                   setIsEditing={() => {}}
+                   setEditingId={() => {}}
                    isCompact={false}
                    hideThreadButton={false}
                    isAuthor={false}

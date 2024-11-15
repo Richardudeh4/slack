@@ -41,9 +41,17 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
                     {format(new Date(createdAt),"hh:mm")}
                 </button>
                 </Hint>
-               
+                <div className="flex flex-col w-full">
+                <Renderer value={body}/>
+                {
+                    updatedAt ? (
+                        <span className="text-xs text-muted-foreground" >
+                            (edited)
+                        </span>
+                    ) 
+                    : null}
+                </div>
             </div>
-           <Renderer value={body}/>
         </div>
     )
 }
