@@ -6,6 +6,7 @@ import { Loader, TriangleAlert } from "lucide-react";
 import Header from "./header";
 import ChatInput from "./chat-input";
 import { UseGetMessages } from "@/src/app/features/messages/api/use-get-messages";
+import MessageList from "@/src/components/message-list";
 
 const ChannelIdPage = () => {
 
@@ -42,6 +43,7 @@ const ChannelIdPage = () => {
     loadMore={loadMore}
     isLoadingMore={status === "LoadingMore"}
     canLoadMore = {status === "CanLoadMore"}
+    variant="channel"
     />
      <ChatInput placeholder={`Message # ${channel.name}`}/>
     </div>
