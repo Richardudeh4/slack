@@ -4,6 +4,10 @@ import { format, formatDistanceStrict, isToday, isYesterday } from "date-fns";
 import { Hint } from "./hint";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Thumbnail from "./thumb-nail";
+import Toolbar from "./toolbar";
+import { useUpdateMessage } from "../app/features/messages/api/use-update-messages";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const  Renderer = dynamic(() => import("@/src/components/renderer"))
 interface MessageProps{
@@ -35,9 +39,23 @@ const formatFullTime = (date: Date) => {
     return `${isToday(date) ? "Today" : isYesterday(date) ? "Yesterday" : format(date, "MMM d , yyyy ")} at ${format(date, "h:mm:ss a")}`;
 };
 export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Member", reactions, body, image, createdAt, updatedAt,isEditing, isCompact,  setEditingId, hideThreadButton, threadCount, threadImage, threadTimestamp}: MessageProps) => {
+    const {mutate: updateMessage, isPending: isUpdatingMessages} = useUpdateMessage();
+
+    const isPending = isUpdatingMessages;
+    const handleUpdate = ({body}: {body:string}) => {
+            updateMessage({id , body}, {
+                onSuccess: () => {
+                    toast.success("Message updated");
+                    setEditingId(null);
+                },
+                onError: () => {
+                    toast.error("Failed to update message");
+                }
+            })
+    }
     if(isCompact){
         return(
-            <div className="flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative">
+            <div className={cn("flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative")}>
                 <div className="flex items-start gap-2">
                     <Hint label={formatFullTime(new Date(createdAt))}>
                     <button className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 w-[40px] leading-[22px] text-center hover:underline">
@@ -56,6 +74,17 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
                         : null}
                     </div>
                 </div>
+                {!isEditing && (
+            <Toolbar 
+            isAuthor={isAuthor}
+            isPending={false}
+            handleReaction={() => {}}
+            handleEdit={() => setEditingId(id)}
+            handleThread={() => {}}
+            handleDelete={() => {}}
+            hideThreadButton={hideThreadButton}
+            />
+           )}
             </div>
         )  
     }
@@ -96,7 +125,17 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
             </div>
         
             </div>
-           
+           {!isEditing && (
+            <Toolbar 
+            isAuthor={isAuthor}
+            isPending={false}
+            handleReaction={() => {}}
+            handleEdit={() => setEditingId(id)}
+            handleThread={() => {}}
+            handleDelete={() => {}}
+            hideThreadButton={hideThreadButton}
+            />
+           )}
         </div>
     )
 }
