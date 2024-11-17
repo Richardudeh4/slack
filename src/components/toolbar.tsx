@@ -27,7 +27,7 @@ const Toolbar = ({isAuthor,isPending,handleDelete,handleEdit,handleReaction, han
        
        { !hideThreadButton && (
         <Hint label="reply in thread "> 
-        <Button variant="ghost" size="iconSm" disabled={isPending}>
+        <Button variant="ghost" size="iconSm" onClick={handleThread} disabled={isPending}>
             <MessageSquareTextIcon className='size-5'/>
         </Button>
         </Hint>
@@ -36,12 +36,12 @@ const Toolbar = ({isAuthor,isPending,handleDelete,handleEdit,handleReaction, han
         isAuthor && (
           <>
           <Hint label='Edit message'>
-          <Button variant="ghost" size="iconSm" disabled={isPending}>
+          <Button variant="ghost" size="iconSm" onClick={handleEdit} disabled={isPending}>
                <Pencil className='size-5'/>
            </Button>
           </Hint>
           <Hint label="Delete message">
-          <Button variant="ghost" size="iconSm" disabled={isPending}>
+          <Button variant="ghost" size="iconSm" onClick={handleDelete} disabled={isPending}>
                <Trash className='size-5'/>
            </Button>
           </Hint>
