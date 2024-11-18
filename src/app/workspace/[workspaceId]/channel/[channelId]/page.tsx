@@ -22,7 +22,6 @@ const ChannelIdPage = () => {
             </div>
         );
     }
-
     if(!channel){
         return (
             <div className="h-full flex-1 flex items-center flex-col gap-y-2 justify-center">

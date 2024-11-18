@@ -4,6 +4,8 @@ import { useWorkspaceId } from '../hooks/use-workspace-id';
 import { useCurrentMember } from '../app/features/members/api/use-current-member';
 import { cn } from '@/lib/utils';
 import { Hint } from './hint';
+import { EmojiPopover } from './emoji-popover';
+import { MdOutlineAddReaction } from 'react-icons/md';
 
 interface ReactionsProps{
     data: Array<Omit<Doc<"reactions">, "memberId"> & {
@@ -37,6 +39,13 @@ const Reactions = ({data, onChange}: ReactionsProps) => {
         </Hint>
        
      ))}
+     <EmojiPopover
+      hint="Add reaction" 
+      onEmojiSelect={(emoji) => onChange(emoji.native)}>
+        <button className='h-7 px-3 rounded-full bg-slate-200/70 border border-transparent hover:border-slate-500 text-slate-800 items-center gap-x-1'>
+            <MdOutlineAddReaction className="size-4 "/>
+        </button>
+     </EmojiPopover>
     </div>
   )
 }

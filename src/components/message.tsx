@@ -12,6 +12,7 @@ import { useRemoveMessage } from "../app/features/messages/api/use-remove-messag
 import { UseConfirm } from "../hooks/use-confirm";
 import { useToggleReactions } from "../app/features/reactions/api/use-toggle-reactions";
 import Reactions from "./reactions";
+import { usePanel } from "../hooks/use-panel";
 
 const  Renderer = dynamic(() => import("@/src/components/renderer"),{ ssr: false});
 const Editor = dynamic(() => import("@/src/components/editor"), {ssr: false});
@@ -48,7 +49,7 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
     const [ConfirmDialog, confirm] = UseConfirm( "Delete Message", "Are you sure you want to do it, This action is irreversable.");
     const {mutate: updateMessage, isPending: isUpdatingMessages} = useUpdateMessage();
     const {mutate: removeMessage, isPending: isRemovingMessage} = useRemoveMessage();
-
+    const {onOpenMessage, onClose ,parentMessageId} = usePanel();
     const handleDelete = async() => {
         const ok = await confirm();
         if(!ok) return;
@@ -56,8 +57,9 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
         removeMessage({id}, {
             onSuccess: () => {
                 toast.success("Message Deleted");
-
-                //TODO:Close thread if open 
+                if(parentMessageId === id){
+                    onClose();
+                }
             },
             onError: () => {
                 toast.error("Failed to delete message"); 
@@ -127,7 +129,7 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
             isPending={isPending}
             handleReaction={handleReaction}
             handleEdit={() => setEditingId(id)}
-            handleThread={() => {}}
+            handleThread={() => onOpenMessage(id)}
             handleDelete={handleDelete}
             hideThreadButton={hideThreadButton}
             />
@@ -194,7 +196,7 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
             isPending={isPending}
             handleReaction={handleReaction}
             handleEdit={() => setEditingId(id)}
-            handleThread={() => {}}
+            handleThread={() => onOpenMessage(id)}
             handleDelete={handleDelete}
             hideThreadButton={hideThreadButton}
             />
