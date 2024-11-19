@@ -133,4 +133,6 @@ const MessageList = ({
   )
 }
 
-export default MessageList
+export default MessageList;
+
+//nuqs version => 1.18.0

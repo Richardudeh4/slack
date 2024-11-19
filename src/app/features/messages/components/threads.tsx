@@ -20,9 +20,9 @@ const Editor = dynamic(() => import("@/src/components/editor"), {ssr: false});
 
 const TIME_THRESHOLD = 20;
 
-interface ThreadProps{
+interface ThreadProps {
 messageId: Id<"messages">;
-onClose: () => void;
+onClose: () =>void;
 }
 type CreateMessageValues = {
     channelId: Id<"channels">;
@@ -57,7 +57,7 @@ export const Thread = ({messageId, onClose}: ThreadProps) => {
 try{
   editorRef?.current?.enable(false);
   setIsPending(true);
-  const values : CreateMessageValues = { channelId, parentMessageId : messageId,  workspaceId, body, image:undefined};
+  const values : CreateMessageValues = { channelId, parentMessageId : messageId,  workspaceId, body, image: undefined};
 
   if(image){
   const url = await generateUploadUrl({}, {throwError: true});
@@ -209,7 +209,6 @@ const groupedMessages  = results?.reduce((groups, message) => {
                 </span>
                 </div>
             )}
-       
                <Message
                hideThreadButton
                memberId={message.memberId}

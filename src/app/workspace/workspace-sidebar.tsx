@@ -7,7 +7,7 @@ import WorkspaceHeader from './workspace-header';
 import { SidebarItem } from './sidebar-item';
 import { useGetChannels } from '../features/channels/api/use-get-channels';
 import WorkspaceSection from './workspace-section';
-import { useGetMembers } from '../features/members/api/use-get-member';
+import { useGetMembers } from '../features/members/api/use-get-members';
 import { UserItem } from './user-item';
 import { useCreateChannelModal } from '../features/channels/store/use-create-workspace';
 import { useChannelId } from '@/src/hooks/use-channel-id';

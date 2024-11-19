@@ -7,7 +7,7 @@ import { useWorkspaceId } from "@/src/hooks/use-workspace-id";
 import { Loader, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useGetMembers } from "../../features/members/api/use-get-member";
+import { useGetMembers } from "../../features/members/api/use-get-members";
 import { useCurrentMember } from "../../features/members/api/use-current-member";
 
 const WorkspaceIdPage = () => {

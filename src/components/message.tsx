@@ -45,18 +45,21 @@ const formatFullTime = (date: Date) => {
     return `${isToday(date) ? "Today" : isYesterday(date) ? "Yesterday" : format(date, "MMM d , yyyy ")} at ${format(date, "h:mm:ss a")}`;
 };
 export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Member", reactions, body, image, createdAt, updatedAt,isEditing, isCompact,  setEditingId, hideThreadButton, threadCount, threadImage, threadTimestamp}: MessageProps) => {
+
     const {mutate: toggleReaction, isPending: isTogglingReaction} = useToggleReactions();
     const [ConfirmDialog, confirm] = UseConfirm( "Delete Message", "Are you sure you want to do it, This action is irreversable.");
     const {mutate: updateMessage, isPending: isUpdatingMessages} = useUpdateMessage();
     const {mutate: removeMessage, isPending: isRemovingMessage} = useRemoveMessage();
-    const {onOpenMessage, onClose ,parentMessageId} = usePanel();
+    const {onOpenMessage, onClose, parentMessageId} = usePanel();
+
     const handleDelete = async() => {
         const ok = await confirm();
-        if(!ok) return;
+        if(!ok) return; 
 
         removeMessage({id}, {
             onSuccess: () => {
                 toast.success("Message Deleted");
+
                 if(parentMessageId === id){
                     onClose();
                 }
@@ -88,7 +91,7 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
     if(isCompact){
         return(
             <>
-            <ConfirmDialog/>
+            <ConfirmDialog/> 
             <div  className={cn("flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60 group relative",
                 isEditing && "bg-[#f2c74433] hover:bg-[#f2c74433]",
                 isRemovingMessage && "bg-rose-500/50 transform transition-all scale-y-0 origin-bottom duration-200"

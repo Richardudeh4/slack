@@ -247,18 +247,20 @@ export const getById = query({
     handler: async(ctx, args) => {
         const userId = await auth.getUserId(ctx);
         if(!userId){
-            throw new Error("Unauthorized");
+            return null;
         }
         const message = await ctx.db.get(args.id);
         if(!message){
             return null;
         }
-        const member = await populateMember(ctx, message.memberId);
-        if(!member){
-            return null;
-        }
+      
         const currentMember = await getMember(ctx, message.workspaceId, userId);
         if(!currentMember){
+            return null;
+        }
+        const member = await populateMember(ctx, message.memberId);
+
+        if(!member){
             return null;
         }
         
