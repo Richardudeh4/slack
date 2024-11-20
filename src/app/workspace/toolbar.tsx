@@ -41,7 +41,7 @@ const Toolbar = ()  => {
           <CommandGroup heading="Channels">
             {
                 channels?.map((channel) => (
-                    <CommandItem onSelect={() => onChannelClick(channel._id)}>
+                    <CommandItem key={channel._id} onSelect={() => onChannelClick(channel._id)}>
                             {channel.name}
                     </CommandItem>
                 ))
@@ -54,7 +54,7 @@ const Toolbar = ()  => {
           <CommandGroup heading="Members">
           {
                 members?.map((member) => (
-                    <CommandItem onSelect={() => onMemberClick(member._id)}>
+                    <CommandItem  key={member._id} onSelect={() => onMemberClick(member._id)}>
                         {member.user.name}
                     </CommandItem>
                 ))

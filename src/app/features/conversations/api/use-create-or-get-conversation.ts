@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 
 type RequestType = {
      workspaceId: Id<"workspaces">,
-     memberId?: Id<"messages">,
+     memberId?: Id<"members">,
     };
 
 type ResponseType = Id<"conversations"> | null;
@@ -26,7 +26,9 @@ export const useCreateOrGetConversation  = () => {
     const isSuccess = useMemo(() => status === "success", [status]);
     const isError = useMemo(() => status === "error", [status]);
     const isSettled = useMemo(() => status === "settled", [status]);
-    const mutation = useMutation(api.conversation.CreateOrGet);
+
+    const mutation = useMutation(api.conversations.createOrGet);
+    
     const mutate = useCallback(async (values: RequestType, options?: Options) => {
         try{
             setData(null);

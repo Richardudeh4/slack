@@ -41,7 +41,7 @@ const Header = ({title}: HeaderProps) => {
     }
 
     const handleDelete = async () => {
-        if(member?.role !== "admin") return;
+        
         const ok = await confirm();
         if(!ok) return; 
         removeChannel({id:channelId}, {
@@ -130,7 +130,10 @@ const Header = ({title}: HeaderProps) => {
                     </Dialog>
                     {
                         member?.role === "admin" && (
-                            <button onSubmit={handleDelete} disabled={removingChannel} className='flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg cursor-pointer border hover:bg-gray-50 text-rose-600 '>
+                            <button 
+                            onSubmit={handleDelete}
+                             disabled={removingChannel} 
+                             className='flex items-center gap-x-2 px-5 py-4 bg-white rounded-lg cursor-pointer border hover:bg-gray-50 text-rose-600 '>
                             <TrashIcon className='size-4'/>
                             <p className='text-sm font-semibold'>Delete Channel</p>
                         </button>
