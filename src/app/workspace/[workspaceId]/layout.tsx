@@ -8,13 +8,14 @@ import { usePanel } from "@/src/hooks/use-panel";
 import { Loader } from "lucide-react";
 import { Id } from "@/convex/_generated/dataModel";
 import {Thread} from "../../features/messages/components/threads";
+import Profile from "../../features/members/components/profile";
 
 interface WorkspaceIdLayoutProps{
     children: React.ReactNode
 }
 export default function WorkspaceIdLayout({children}: WorkspaceIdLayoutProps){
-    const {parentMessageId, onClose} = usePanel();
-    const showPanel = !!parentMessageId;
+    const {parentMessageId ,profileMemberId , onClose} = usePanel();
+    const showPanel = !!parentMessageId || !!profileMemberId;
     return (
         <div className="h-full">
             <Toolbar/>
@@ -29,7 +30,7 @@ export default function WorkspaceIdLayout({children}: WorkspaceIdLayoutProps){
                     <WorkspaceSidebar/>
                     </ResizablePanel>
                     <ResizableHandle withHandle/>
-                    <ResizablePanel minSize={20}>
+                    <ResizablePanel minSize={20} defaultSize={80}>
                     {children} 
                     </ResizablePanel>
                     { 
@@ -38,14 +39,17 @@ export default function WorkspaceIdLayout({children}: WorkspaceIdLayoutProps){
                         <ResizableHandle withHandle/>
                         <ResizablePanel minSize={20} defaultSize={29}>
                             { parentMessageId ? (
-                                <>
-                                <h1> richad udhe</h1>
                                 <Thread
                                 messageId= {parentMessageId as Id<"messages">}
                                 onClose={onClose} 
                                 />
-                                </>
-                                ) : (
+                                ) : profileMemberId ? (
+                                    <Profile
+                                    memberId={profileMemberId as Id<"members">}
+                                    onClose={onClose}
+                                    />
+                                )
+                                :(
                                     <div className="flex h-full items-center justify-center ">
                                     <Loader className="size-5 animate-spin text-muted-foreground"/>
                                    </div>

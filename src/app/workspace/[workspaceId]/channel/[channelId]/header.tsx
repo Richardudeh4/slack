@@ -34,14 +34,15 @@ const Header = ({title}: HeaderProps) => {
             if(member?.role !== "admin") return;
             setEditOpen(true);
     }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value.replace(/\s+/g, "-").toLowerCase();
         setValue(value);
     }
 
     const handleDelete = async () => {
+        if(member?.role !== "admin") return;
         const ok = await confirm();
-
         if(!ok) return; 
         removeChannel({id:channelId}, {
             onSuccess:() => {

@@ -13,6 +13,7 @@ import { UseConfirm } from "../hooks/use-confirm";
 import { useToggleReactions } from "../app/features/reactions/api/use-toggle-reactions";
 import Reactions from "./reactions";
 import { usePanel } from "../hooks/use-panel";
+import ThreadBar from "./thread-bar";
 
 const  Renderer = dynamic(() => import("@/src/components/renderer"),{ ssr: false});
 const Editor = dynamic(() => import("@/src/components/editor"), {ssr: false});
@@ -37,6 +38,7 @@ interface MessageProps{
     setEditingId:(id: Id<"messages"> | null) => void;
     hideThreadButton?: boolean;
     threadCount?: number;
+    threadName?:string;
     threadImage?: string;
     threadTimestamp?: number;
 };
@@ -44,13 +46,13 @@ interface MessageProps{
 const formatFullTime = (date: Date) => {
     return `${isToday(date) ? "Today" : isYesterday(date) ? "Yesterday" : format(date, "MMM d , yyyy ")} at ${format(date, "h:mm:ss a")}`;
 };
-export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Member", reactions, body, image, createdAt, updatedAt,isEditing, isCompact,  setEditingId, hideThreadButton, threadCount, threadImage, threadTimestamp}: MessageProps) => {
+export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Member", reactions, body, image, createdAt, updatedAt,isEditing, isCompact,  setEditingId, hideThreadButton, threadCount,threadName, threadImage, threadTimestamp}: MessageProps) => {
 
     const {mutate: toggleReaction, isPending: isTogglingReaction} = useToggleReactions();
     const [ConfirmDialog, confirm] = UseConfirm( "Delete Message", "Are you sure you want to do it, This action is irreversable.");
     const {mutate: updateMessage, isPending: isUpdatingMessages} = useUpdateMessage();
     const {mutate: removeMessage, isPending: isRemovingMessage} = useRemoveMessage();
-    const {onOpenMessage, onClose, parentMessageId} = usePanel();
+    const {onOpenMessage, onClose, onOpenProfile ,parentMessageId} = usePanel();
 
     const handleDelete = async() => {
         const ok = await confirm();
@@ -69,7 +71,7 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
             }
         })
     }
-    const isPending = isUpdatingMessages;
+    const isPending = isUpdatingMessages || isTogglingReaction;
     const handleReaction = (value: string) => {
         toggleReaction({messageId: id, value}, {
             onError: () => {
@@ -123,6 +125,13 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
                         ) 
                         : null}
                           <Reactions data={reactions} onChange={handleReaction}/>
+                          <ThreadBar
+                          count={threadCount}
+                          image={threadImage}
+                          threadName={threadName}
+                          timeStamp={threadTimestamp}
+                          onClick={() => onOpenMessage(id)}
+                          />
                     </div>
                   )}
                 </div>
@@ -150,7 +159,7 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
             isRemovingMessage && "bg-rose-500/50 transform transition-all scale-y-0 origin-bottom duration-200"
         )}>
             <div className="flex items-start gap-2">
-            <button>
+            <button onClick={() => onOpenProfile(memberId)}>
             <Avatar className="rounded-md ">
                 <AvatarImage className="rounded-md" src={authorImage}/>
                 <AvatarFallback className="">
@@ -170,7 +179,7 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
             ):(
                 <div className="flex flex-col w-full overflow-hidden">
                 <div className="text-sm">
-                    <button onClick={() => {}} className="font-bold text-primary hover:underline">
+                    <button onClick={() => onOpenProfile(memberId)} className="font-bold text-primary hover:underline">
                         {authorName}
                     </button>
                     <span>
@@ -190,6 +199,13 @@ export const Message = ({id, isAuthor, memberId, authorImage, authorName ="Membe
                             </span>
                         ) : null}    
                         <Reactions data={reactions} onChange={handleReaction}/>
+                        <ThreadBar
+                          count={threadCount}
+                          image={threadImage}
+                          threadName={threadName}
+                          timeStamp={threadTimestamp}
+                          onClick={() => onOpenMessage(id)}
+                          />
             </div>
             )}
             </div>
